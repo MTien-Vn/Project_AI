@@ -4,6 +4,7 @@
 #define __MAP_H__
 
 #define EMPTY_MAP_ERROR -1
+#define NOT_EXITST_NODE -2
 #define CREATE_MAP_ERROR 0
 #define CREATE_MAP_SUCCESS 1
 

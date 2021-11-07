@@ -44,18 +44,18 @@ int countNumberNodeInMap(char fileName[]){
 }
 
 // check (x,y) is allocate ID or not
-bool isExitstNodeId(vector<Node> map[], int x, int y){
+int isExitstNodeId(vector<Node> map[], int x, int y){
     for (int i = 0; i < numberNodeInMap; i++)
     {
         for (auto node : map[i])
         {
             if(node.coX == x && node.coY == y){
-                return true;
+                return node.id;
             }
         }
         
     }
-    return false;
+    return NOT_EXITST_NODE;
 }
 
 // A utility function to add an edge in an
@@ -64,16 +64,24 @@ void addEdge(vector<Node> map[], Node u, Node v)
 {
     u.distance = rand() % 70 + 30; // random distance in [30;100]
     u.time = rand() % 50 + 10; // random time in [10;50]
-    if(!isExitstNodeId(map, u.coX, u.coY)){
+    int id = isExitstNodeId(map, u.coX, u.coY);
+    if(id == NOT_EXITST_NODE){
         u.id = nodeId;
         nodeId++;
+    }
+    else{
+        u.id = id;
     }
 
     v.distance = u.distance; // distance from u->v = v->u
     v.time = u.time; // time from u->v = v->u
-    if(!isExitstNodeId(map, v.coX, v.coY)){
+    id = isExitstNodeId(map, v.coX, v.coY);
+    if(id == NOT_EXITST_NODE){
         v.id = nodeId;
         nodeId++;
+    }
+    else{
+        v.id = id;
     }
 
     map[u.id].push_back(v);
