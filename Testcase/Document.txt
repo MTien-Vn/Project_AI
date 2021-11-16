@@ -1,0 +1,25 @@
+ Generate graph:  https://test-case-generator.herokuapp.com/
+ Input
+    n points  m edges
+    n points (x,y)
+    m edges (A,B, weight)
+
+ 2 test cases 
+    100 points => 
+    1000000 points
+
++ Khảo sat nen dùng bao nhiêu edges : 
+   Từ điểm 1 đến n => tính xem từ 1 điểm có bao nhiêu con đường đến các điểm còn lại => Lấy trung bình và rút ra công thức
+
++ Tọa độ của n điểm
+   100 points => 50*50
+   1000000 points => 10000*10000
+
++ m cạnh
+  * weight phải lớn hơn đường chim bay || tổng 2 cạnh vuông 
+  
+
+
+
+
+
