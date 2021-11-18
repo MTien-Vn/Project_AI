@@ -2,7 +2,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <fstream>
-#define RANDOM 10000
+#define RANDOM 75
 using namespace std;
 
 typedef pair<int, int> ii;
@@ -26,7 +26,7 @@ void input(){
     cin >> n;
     srand(time(NULL));
     for(int i = 1; i <= n ; i++){
-        outfile.open("./vertices1.txt", ios::app);
+        outfile.open("./vertices.txt", ios::app);
         int x = rand()%(RANDOM-1+1)+1;
         int y = rand()%(RANDOM-1+1)+1;
         if (Test(x,y) == 1){
@@ -45,6 +45,7 @@ int main(){
     input();
     return 0;
 }
+
 
 
 
