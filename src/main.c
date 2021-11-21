@@ -175,5 +175,5 @@ void main()
         }
     }
     fprintf(fp, "Total order: %d\n", count);
-    
+    fclose(fp);
 }
