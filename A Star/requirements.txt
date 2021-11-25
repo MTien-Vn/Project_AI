@@ -29,4 +29,4 @@ Order file:
 
 Result file:
 - first line is number: n (number of orders can be shipped)
-- next n lines, each i-th line contains: n1 n2 t (means we have to go from node n1 to node n2 to ship i-th order, t is total minutes we need)
+- next line contain n number: t[i] (t[i] is total minutes we need to ship i-th order)
