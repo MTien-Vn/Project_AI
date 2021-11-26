@@ -1,6 +1,10 @@
 #include<bits/stdc++.h>
 
-#include "accuracy.h"
+#define IO_ERROR -2
+#define IO_SUCCESS -1
+
+#define ACCURACY_ERROR 2
+#define ACCURACY_SUCCESS 3
 
 using namespace std;
 
@@ -45,6 +49,9 @@ float accuracy(char* fileNameAStart, char* fileNameDj){
         for (int i = 0; i < numberRowAStart; i++)
         {
             float result = dataAStart[i] - dataDj[i];
+            if((result / dataDj[i]) > 1){
+                printf("Time difference using A* greater than Dijitra algorithm:: %lf times, at line: %d\n", result / dataDj[i], i+2);
+            }
             if(result < 0){
                 printf("Data error, row: %d in file result\n", i+1);
                 return ACCURACY_ERROR;
@@ -52,10 +59,29 @@ float accuracy(char* fileNameAStart, char* fileNameDj){
             expect += result / dataDj[i];
         }
         
-        return (1- expect / numberRowAStart)*100;
+        return (expect / numberRowAStart)*100;
     }
     else{
         printf("Number row in A* > number row in Dj\n");
         return (float)ACCURACY_ERROR;
     }
+}
+
+
+int main(int argc, char const *argv[])
+{
+    char fileNameAStart[] = "aStart.txt";
+    char fileNameDj[] = "dj.txt";
+    float result = accuracy(fileNameAStart, fileNameDj);
+    if(result == IO_ERROR){
+        printf("There are error in read file\n");
+    }
+    else if(result == ACCURACY_ERROR){
+        printf("There are error in accuracy function\n");
+    }
+    else{
+        printf("Average Difference betwwen A* and Dijitra algorithm: %lf percent\n", result);
+        printf("*Note: The smaller percentage of Difference betwwen A* and Dijitra algorithm, the more accuracy\n");
+    }
+    return 0;
 }
