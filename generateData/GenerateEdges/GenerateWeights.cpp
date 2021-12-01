@@ -5,6 +5,7 @@
 #include <fstream>
 #define MAX 100
 #define RANDOM 20
+#define MAX_DIST 100
 using namespace std;
 
 typedef pair<int, int> ii;
@@ -14,6 +15,7 @@ int i = 1;
 int check[1000000];
 vector<ii> edges;
 vector<ii> vertices;
+int a[10] = {5 , 10, 15 , 20, 25, 30 ,35,40, 45, 60 };
 fstream inVerticesfile,inEdgefile, outfile;
 
 void input(){
@@ -23,7 +25,7 @@ void input(){
         int x,y;
         inVerticesfile >> x >> y;
         vertices.push_back(ii(x,y));
-        //cout << x<< " " << y << endl;
+        cout << x<< " " << y << endl;
     }
     inVerticesfile.close();
 
@@ -39,7 +41,7 @@ void input(){
 }
 
 double Distance(ii a , ii b){
-    return (pow(a.first - b.first, 2) + pow(a.second - b.second,2))*1.0;
+    return sqrt((pow(a.first - b.first, 2) + pow(a.second - b.second,2))*1.0);
 }
 
 void generateWeight(){
@@ -52,7 +54,7 @@ void generateWeight(){
         int x = edges[i].first;
         int y = edges[i].second;
         double dist = sqrt(Distance(vertices[x-1], vertices[y-1]));
-        double actual_dist = (100+ (rand()%(RANDOM-1+1)+1))*dist/100;
+        int actual_dist = rand()%(60-5+1)+5;
         outfile << x <<" " << y << " " << (int)(actual_dist)<< endl;
     }
     outfile.close();
