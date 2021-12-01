@@ -48,8 +48,8 @@ NodeDetails node_details[MAXN]; // details info of nodes
 
 
 void read_input(){
-    ifstream map_inp("map.input");
-    ifstream order_inp("order.input");
+    ifstream map_inp("map.txt");
+    ifstream order_inp("order.txt");
 
     map_inp >> node_cnt >> edge_cnt;
     for(int i = 1; i <= node_cnt; ++i) {
@@ -115,7 +115,7 @@ void a_star(int start, int dest) {
 }
 
 void print_result() {
-    ofstream out("result.output");
+    ofstream out("aStart.txt");
     out << result.size() << endl;
     out << "1 " << order_des[1] << " " << result[0] << endl;
     for (int i = 1; i < result.size(); ++i)

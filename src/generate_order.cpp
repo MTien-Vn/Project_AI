@@ -7,7 +7,7 @@ int random(int l, int r) {
 }
 
 int main() {
-    ofstream out("order.input");
+    ofstream out("order.txt");
     srand(time(NULL));
     int n = random(1000, 2000);
     out<<n<<endl;
