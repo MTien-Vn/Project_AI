@@ -26,7 +26,7 @@ int comp(ii a , ii b){
 
 
 void input(){
-    infile.open("./Line.txt", ios::in);
+    infile.open("./edges.txt", ios::in);
     while(!infile.eof()){
         int x,y;
         infile >> x >> y;
@@ -56,7 +56,7 @@ int Distance(ii a , ii b){
 }
 
 void Sort(){
-    while(i <= MAX){
+    /*while(i <= MAX){
         if (check[i] == 0){
             int index = i-1;
             ii x = vertices[index];
@@ -77,7 +77,7 @@ void Sort(){
             }
         }
         i++;
-    }
+    }*/
     sort(edges.begin(), edges.end(), comp);
     for (int v = 1; v <= MAX; v++ ){
         cout <<v <<" " << check[v] << endl;
