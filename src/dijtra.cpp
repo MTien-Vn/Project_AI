@@ -23,7 +23,7 @@ struct Path {
     Path() {};
     Path(int n, int l) : last_node(n), length(l) {};
     bool operator < (const Path &other) const {
-        return length < other.length;
+        return length > other.length;
     }
 };
 
@@ -153,7 +153,7 @@ int main()
         }
         fprintf(fp,"\n");
     }
-    
+
     fclose(fp);
     return 0;
 }

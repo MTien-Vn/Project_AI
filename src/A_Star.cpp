@@ -15,7 +15,7 @@ struct Path {
     Path() {};
     Path(int n, int p) : last_node(n), point(p) {};
     bool operator < (const Path &other) const {
-        return point < other.point;
+        return point > other.point;
     }
 };
 
@@ -79,8 +79,10 @@ double sqr(double x) {
     return x*x;
 }
 
-double get_heuristic(int i, int j) {
-    return sqrt(sqr(coord[i].first - coord[j].first) + sqr(coord[i].second - coord[j].second));
+void init_heuristic(int start, int dest) {
+    for(int i = 1; i<= node_cnt; ++i) {
+        node_details[i].h = sqrt(sqr(coord[i].first - coord[dest].first) + sqr(coord[i].second - coord[dest].second));
+    }
 }
 
 void a_star(int start, int dest) {
@@ -91,6 +93,8 @@ void a_star(int start, int dest) {
     // Start from node 1
     node_details[start] = NodeDetails(0,0,0,start,false);
     q.push(Path(start, 0));
+    // Init H function
+    init_heuristic(start, dest);
     // Start Algorithm
     while(!q.empty()) {
         int cur_node = q.top().last_node;
@@ -104,7 +108,7 @@ void a_star(int start, int dest) {
         for(int i = 0; i < adjacent_edges[cur_node].size(); ++i) {
             Edge e = adjacent_edges[cur_node][i];
             double g_new = node_details[cur_node].g + e.length;
-            double h_new = get_heuristic(cur_node, e.node);
+            double h_new = node_details[e.node].h;
             double f_new = g_new + h_new;
             if (!node_details[e.node].is_closed && node_details[e.node].f > f_new) {
                 node_details[e.node] = NodeDetails(f_new, g_new, h_new, cur_node, false);
@@ -117,13 +121,17 @@ void a_star(int start, int dest) {
 void print_result() {
     ofstream out("aStart.txt");
     out << result.size() << endl;
-    out << "1 " << order_des[1] << " " << result[0] << endl;
-    for (int i = 1; i < result.size(); ++i)
-        out << order_des[i] << " " << order_des[i+1] << " " << result[i] << endl;
+    if (result.size() > 0) {
+        out << "1 " << order_des[1] << " " << result[0] << endl;
+        for (int i = 1; i < result.size(); ++i)
+            out << order_des[i] << " " << order_des[i+1] << " " << result[i] << endl;
+    }
     out.close();
 }
 
 int main() {
+    clock_t time_req = clock();
+
     read_input();
 
     int i = 1, start = 1, total_time = 0;
@@ -140,5 +148,8 @@ int main() {
     }
 
     print_result();
+
+    time_req = clock() - time_req;
+    cerr<<"Execution time: "<<(float)time_req/CLOCKS_PER_SEC<<endl;
     return 0;
 }
