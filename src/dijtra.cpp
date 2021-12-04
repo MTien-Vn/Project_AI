@@ -1,138 +1,45 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <limits.h>
-#define MAX 10000
-#define INFINITY 9999
-#define TEMP 0
-#define PERM 1
+#include<bits/stdc++.h>
+#define MAX 100000
 
-typedef struct node
+
+using namespace std;
+
+struct Node
 {
-    int id;
     int x, y;
-} Node;
+};
 
-typedef struct edge
+struct Edge
 {
-    Node start;
-    Node end;
-    int t_time;
-} Edge;
+    int node;
+    int length;
+    Edge() {};
+    Edge(int n, int l) : node(n), length(l) {};
+};
+
+struct Path {
+    int last_node;
+    int length;
+    Path() {};
+    Path(int n, int l) : last_node(n), length(l) {};
+    bool operator < (const Path &other) const {
+        return length > other.length;
+    }
+};
+
 
 int node_cnt, edge_cnt;
 Node node[MAX];
-Edge edge[MAX]; // list of adjacent edges of each node i
-int G[MAX][MAX];
+vector<Edge> adjacent_edges[MAX]; // list of adjacent edges of each node i
+int dist[MAX]; // distance from node i to node j
+int cnt[MAX];
 int orders[MAX];
 int order_cnt;
 
-void readMap(char *filename)
+
+void readOrder()
 {
-    FILE *f = fopen(filename, "r");
-    if (f == NULL)
-    {
-        printf("Can not open this file\n");
-    }
-    else
-    {
-        char str[MAX];
-        fscanf(f, "%d %d", &node_cnt, &edge_cnt);
-        for (int i = 0; i < node_cnt; i++)
-        {
-            node[i].id = i + 1;
-            fscanf(f, "%d %d", &node[i].x, &node[i].y);
-        }
-
-        for (int i = 0; i < edge_cnt; i++)
-        {
-            fscanf(f, "%d %d %d", &edge[i].start.id, &edge[i].end.id, &edge[i].t_time);
-        }
-    }
-    fclose(f);
-}
-
-void printMatrix()
-{
-    for (int i = 0; i < node_cnt; i++)
-    {
-        for (int j = 0; j < node_cnt; j++)
-        {
-            G[i][j] = 0;
-        }
-    }
-
-    for (int k = 0; k < edge_cnt; k++)
-    {
-        G[edge[k].start.id - 1][edge[k].end.id - 1] = edge[k].t_time;
-        G[edge[k].end.id - 1][edge[k].start.id - 1] = edge[k].t_time;
-    }
-
-}
-
-int dijkstra(int startnode, int endnode)
-{
-    startnode = startnode - 1;
-    endnode = endnode - 1;
-    int distance[MAX], pred[MAX];
-    int visited[MAX], count, mindistance, nextnode, i, j;
-    //pred[] stores the predecessor of each node
-    //count gives the number of nodes seen so far
-    //create the cost matrix
-    for (i = 0; i < node_cnt; i++)
-        for (j = 0; j < node_cnt; j++)
-            if (G[i][j] == 0)
-                G[i][j] = INFINITY;
-            else
-                G[i][j] = G[i][j];
-    //initialize pred[],distance[] and visited[]
-    for (i = 0; i < node_cnt; i++)
-    {
-        distance[i] = G[startnode][i];
-        pred[i] = startnode;
-        visited[i] = 0;
-    }
-    distance[startnode] = 0;
-    visited[startnode] = 1;
-    count = 1;
-    while (count < node_cnt - 1)
-    {
-        mindistance = INFINITY;
-        //nextnode gives the node at minimum distance
-        for (i = 0; i < node_cnt; i++)
-            if (distance[i] < mindistance && !visited[i])
-            {
-                mindistance = distance[i];
-                nextnode = i;
-            }
-        //check if a better path exists through nextnode
-        visited[nextnode] = 1;
-        for (i = 0; i < node_cnt; i++)
-            if (!visited[i])
-                if (mindistance + G[nextnode][i] < distance[i])
-                {
-                    distance[i] = mindistance + G[nextnode][i];
-                    pred[i] = nextnode;
-                }
-        count++;
-    }
-
-    //print the path and distance of each node
-    
-    // printf("\nDistance of node%d=%d", endnode + 1, distance[endnode]);
-    // printf("\nPath=%d", endnode + 1);
-    // j = endnode;
-    // do
-    // {
-    //     j = pred[j];
-    //     printf("<-%d", j + 1);
-    // } while (j != startnode);
-    // printf("\n");
-    return distance[endnode];
-}
-
-void readOrder(char *filename)
-{
-    FILE *f = fopen(filename, "r");
+    FILE *f = freopen("order.txt", "r", stdin);;
     if (f == NULL)
     {
         printf("Can not open this file\n");
@@ -148,32 +55,113 @@ void readOrder(char *filename)
     fclose(f);
 }
 
-void main()
+void readMap()
 {
-    readMap("in.inp");
-    readOrder("order.inp");
-    printMatrix();
-    FILE *fp = fopen("a.out", "w");
+    FILE *f = freopen("map.txt", "r", stdin);
+    if (f == NULL)
+    {
+        printf("Can not open this file\n");
+    }
+    else
+    {
+        fscanf(f, "%d %d", &node_cnt, &edge_cnt);
+        for (int i = 0; i < node_cnt; i++)
+        {
+            fscanf(f, "%d %d", &node[i].x, &node[i].y);
+        }
+
+        for (int i = 0; i < edge_cnt; i++)
+        {
+            int node1, node2, length;
+            cin >> node1 >> node2 >> length;
+            // add adjacent edges
+            adjacent_edges[node1 - 1].push_back(Edge(node2 - 1, length));
+            adjacent_edges[node2 - 1].push_back(Edge(node1 - 1, length));
+        }
+    }
+    fclose(f);
+}
+
+
+int dijkstra(int startnode, int endnode)
+{
+    startnode = startnode - 1;
+    endnode = endnode - 1;
+    // Init
+    priority_queue<Path> q;
+    for(int i = 0; i < node_cnt; ++i)
+        dist[i] = INT_MAX;
+    for(int i = 0; i < node_cnt; ++i)
+        cnt[i] = 1;
+    // Start from startnode
+    dist[startnode] = 0;
+    q.push(Path(startnode, dist[startnode]));
+    // Start Algorithm
+    while(!q.empty()) {
+        int cur_node = q.top().last_node;
+        int cur_length = q.top().length;
+        q.pop();
+        // Skip if path come to node was change after we push the old path to priority queue
+        if (dist[cur_node] != cur_length) continue;
+        // Traverse list of adjacent edges
+        for(int i = 0; i < adjacent_edges[cur_node].size(); ++i) {
+            Edge e = adjacent_edges[cur_node][i];
+            if (dist[e.node] > cur_length + e.length) {
+                dist[e.node] = cur_length + e.length;
+                cnt[e.node] = cnt[cur_node] + 1;
+                q.push(Path(e.node, dist[e.node]));
+            }
+        }
+    }
+    printf("%d %d\n", cnt[endnode], dist[endnode]);
+    return dist[endnode];
+}
+
+
+int main()
+{
+    readMap();
+    readOrder();
+    FILE *fp = fopen("Dj.txt", "w");
 
     int time_limit = 0;
     int start = 1;
     int count = 1;
     int time_work = 8*60;
-    time_limit += dijkstra(start, orders[0]);
-    fprintf(fp, "%d %d %d\n", start, orders[0], dijkstra(start, orders[0]));
+    int dis = dijkstra(start, orders[0]);
+    queue<int> q;
+    q.push(start);
+    q.push(orders[0]);
+    q.push(dis);
+    time_limit += dis;
     if(time_limit < time_work){
         for(int i = 0; i < order_cnt; i++){
+            dis = dijkstra(orders[i],orders[i+1]);
+            time_limit += dis;
             if(time_limit < time_work){
-                if(i != order_cnt-1 ){
+                if(i != order_cnt - 1) {
                     count++;
-                    time_limit += dijkstra(orders[i],orders[i+1]);
-                    fprintf(fp, "%d %d %d\n", orders[i], orders[i+1], dijkstra(orders[i],orders[i+1]));
+                    q.push(orders[i]);
+                    q.push(orders[i+1]);
+                    q.push(dis);
                 }
                 else break;
             }
             else break;
         }
     }
-    fprintf(fp, "Total order: %d\n", count);
+
+    //Print to file out
+    fprintf(fp, "%d\n", count);
+    while (!q.empty())
+    {
+        for (int i = 0; i < 3 ; i++ ){
+            fprintf(fp, "%d " , q.front());
+            q.pop();
+        }
+        fprintf(fp,"\n");
+    }
+    
     fclose(fp);
+    return 0;
 }
