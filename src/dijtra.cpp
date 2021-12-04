@@ -1,5 +1,5 @@
 #include<bits/stdc++.h>
-#define MAX 10000
+#define MAX 100000
 
 
 using namespace std;
