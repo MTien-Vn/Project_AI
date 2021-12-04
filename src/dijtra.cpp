@@ -32,6 +32,7 @@ int node_cnt, edge_cnt;
 Node node[MAX];
 vector<Edge> adjacent_edges[MAX]; // list of adjacent edges of each node i
 int dist[MAX]; // distance from node i to node j
+int cnt[MAX];
 int orders[MAX];
 int order_cnt;
 
@@ -89,6 +90,8 @@ int dijkstra(int startnode, int endnode)
     priority_queue<Path> q;
     for(int i = 0; i < node_cnt; ++i)
         dist[i] = INT_MAX;
+    for(int i = 0; i < node_cnt; ++i)
+        cnt[i] = 1;
     // Start from startnode
     dist[startnode] = 0;
     q.push(Path(startnode, dist[startnode]));
@@ -104,10 +107,12 @@ int dijkstra(int startnode, int endnode)
             Edge e = adjacent_edges[cur_node][i];
             if (dist[e.node] > cur_length + e.length) {
                 dist[e.node] = cur_length + e.length;
+                cnt[e.node] = cnt[cur_node] + 1;
                 q.push(Path(e.node, dist[e.node]));
             }
         }
     }
+    printf("%d\n", cnt[endnode]);
     return dist[endnode];
 }
 
@@ -122,20 +127,22 @@ int main()
     int start = 1;
     int count = 1;
     int time_work = 8*60;
+    int dis = dijkstra(start, orders[0]);
     queue<int> q;
     q.push(start);
     q.push(orders[0]);
-    q.push(dijkstra(start, orders[0]));
-    time_limit += dijkstra(start, orders[0]);
+    q.push(dis);
+    time_limit += dis;
     if(time_limit < time_work){
         for(int i = 0; i < order_cnt; i++){
-            time_limit += dijkstra(orders[i],orders[i+1]);
+            dis = dijkstra(orders[i],orders[i+1]);
+            time_limit += dis;
             if(time_limit < time_work){
                 if(i != order_cnt - 1) {
                     count++;
                     q.push(orders[i]);
                     q.push(orders[i+1]);
-                    q.push(dijkstra(orders[i], orders[i+1]));
+                    q.push(dis);
                 }
                 else break;
             }
@@ -153,7 +160,7 @@ int main()
         }
         fprintf(fp,"\n");
     }
-
+    
     fclose(fp);
     return 0;
 }
