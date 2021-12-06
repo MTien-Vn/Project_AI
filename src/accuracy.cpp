@@ -34,13 +34,13 @@ vector<int> readFile(char* fileName){
 
 float accuracy(char* fileNameAStart, char* fileNameDj){
     vector<int> dataAStart = readFile(fileNameAStart); 
-    int numberRowAStart = dataAStart.size();
+    int numberRowAStart = dataAStart.size() - 1;
     if(numberRowAStart == 0){
         return (float)IO_ERROR;
     }
 
     vector<int> dataDj = readFile(fileNameDj); 
-    int numberRowDj = dataDj.size();
+    int numberRowDj = dataDj.size() - 1;
     if(numberRowDj == 0){
         return (float)IO_ERROR;
     }
