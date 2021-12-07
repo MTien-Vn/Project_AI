@@ -82,7 +82,7 @@ void readMap()
 }
 
 
-int dijkstra(int startnode, int endnode)
+void dijkstra(int startnode, int endnode,int *count_node, int *distance)
 {
     startnode = startnode - 1;
     endnode = endnode - 1;
@@ -112,8 +112,8 @@ int dijkstra(int startnode, int endnode)
             }
         }
     }
-    printf("%d\n", cnt[endnode]);
-    return dist[endnode];
+    *count_node = cnt[endnode];
+    *distance = dist[endnode];
 }
 
 
@@ -123,32 +123,40 @@ int main()
     readOrder();
     FILE *fp = fopen("Dj.txt", "w");
 
+    int x,y;
+    int count_node = 0;
     int time_limit = 0;
     int start = 1;
     int count = 1;
     int time_work = 8*60;
-    int dis = dijkstra(start, orders[0]);
+    dijkstra(start,orders[0],&x,&y);
     queue<int> q;
     q.push(start);
     q.push(orders[0]);
-    q.push(dis);
-    time_limit += dis;
+    q.push(y);
+    count_node += x;
+    time_limit += y;
     if(time_limit < time_work){
         for(int i = 0; i < order_cnt; i++){
-            dis = dijkstra(orders[i],orders[i+1]);
-            time_limit += dis;
+            dijkstra(orders[i],orders[i+1],&x,&y);
+            count_node += x;
+            time_limit += y;
             if(time_limit < time_work){
                 if(i != order_cnt - 1) {
                     count++;
                     q.push(orders[i]);
                     q.push(orders[i+1]);
-                    q.push(dis);
+                    q.push(y);
                 }
                 else break;
             }
-            else break;
+            else {
+                count_node -= x;
+                break;
+            }
         }
     }
+    printf("%d", count_node);
 
     //Print to file out
     fprintf(fp, "%d\n", count);
