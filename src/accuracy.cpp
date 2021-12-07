@@ -45,7 +45,7 @@ float accuracy(char* fileNameAStart, char* fileNameDj){
         return (float)IO_ERROR;
     }
     float expect = 0;
-    if(numberRowAStart < numberRowDj){
+    if(numberRowAStart <= numberRowDj){
         for (int i = 0; i < numberRowAStart; i++)
         {
             float result = dataAStart[i] - dataDj[i];
