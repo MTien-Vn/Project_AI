@@ -12,7 +12,7 @@ int main() {
     int n = random(1000, 2000);
     out<<n<<endl;
     for(int i = 1 ; i<=n ; i++) {
-        int id = random(1,100);
+        int id = random(1,100000);
         out<<id<<" ";
     }
     return 0;
