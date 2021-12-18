@@ -136,12 +136,14 @@ int main()
     q.push(y);
     count_node += x;
     time_limit += y;
+    printf("%d\n", x);
     if(time_limit < time_work){
         for(int i = 0; i < order_cnt; i++){
             dijkstra(orders[i],orders[i+1],&x,&y);
             count_node += x;
             time_limit += y;
             if(time_limit < time_work){
+                printf("%d\n", x);
                 if(i != order_cnt - 1) {
                     count++;
                     q.push(orders[i]);
