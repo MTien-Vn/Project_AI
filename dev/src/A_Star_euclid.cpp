@@ -83,7 +83,7 @@ double sqr(double x) {
 
 void init_heuristic(int start, int dest) {
     for(int i = 1; i<= node_cnt; ++i) {
-        node_details[i].h = sqrt(sqr(coord[i].first - coord[dest].first) + sqr(coord[i].second - coord[dest].second));
+        node_details[i].h = 0.01*sqrt(sqr(coord[i].first - coord[dest].first) + sqr(coord[i].second - coord[dest].second));
     }
 }
 

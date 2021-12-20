@@ -79,25 +79,33 @@ double sqr(double x) {
     return x*x;
 }
 
+//Using angle deviation to find h(n)
+// void init_heuristic(int start, int dest) {
+//     pair<double, double> base_vector = make_pair(coord[start].first - coord[dest].first, coord[start].second - coord[dest].second);
+//     double pi = 2 * acos(0.0);
+
+//     for(int i = 1; i<= node_cnt; ++i) {
+//         if (i == start || i == dest) {
+//             node_details[i].h = 0;
+//             continue;
+//         }
+
+//         pair<double, double> current_vector = make_pair(coord[i].first - coord[dest].first, coord[i].second - coord[dest].second);
+//         double cos_value = (
+//             (base_vector.first * current_vector.first + base_vector.second * current_vector.second)
+//             / sqrt(sqr(base_vector.first) + sqr(base_vector.second))
+//             / sqrt(sqr(current_vector.first) + sqr(current_vector.second))
+//         );
+
+//         double angle = acos(cos_value) * 180.0 / pi;
+//         node_details[i].h = 0.15*angle;
+//     }
+// }
+
+// Using Euclid Distance to find h(n)
 void init_heuristic(int start, int dest) {
-    pair<double, double> base_vector = make_pair(coord[start].first - coord[dest].first, coord[start].second - coord[dest].second);
-    double pi = 2 * acos(0.0);
-
     for(int i = 1; i<= node_cnt; ++i) {
-        if (i == start || i == dest) {
-            node_details[i].h = 0;
-            continue;
-        }
-
-        pair<double, double> current_vector = make_pair(coord[i].first - coord[dest].first, coord[i].second - coord[dest].second);
-        double cos_value = (
-            (base_vector.first * current_vector.first + base_vector.second * current_vector.second)
-            / sqrt(sqr(base_vector.first) + sqr(base_vector.second))
-            / sqrt(sqr(current_vector.first) + sqr(current_vector.second))
-        );
-
-        double angle = acos(cos_value) * 180.0 / pi;
-        node_details[i].h = 0.15*angle;
+        node_details[i].h = 0.01*sqrt(sqr(coord[i].first - coord[dest].first) + sqr(coord[i].second - coord[dest].second));
     }
 }
 
