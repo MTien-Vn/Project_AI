@@ -32,7 +32,6 @@ int node_cnt, edge_cnt;
 Node node[MAX];
 vector<Edge> adjacent_edges[MAX]; // list of adjacent edges of each node i
 int dist[MAX]; // distance from node i to node j
-int cnt[MAX];
 int orders[MAX];
 int order_cnt;
 
@@ -84,14 +83,13 @@ void readMap()
 
 void dijkstra(int startnode, int endnode,int *count_node, int *distance)
 {
+    long long visited_node_cnt = 0;
     startnode = startnode - 1;
     endnode = endnode - 1;
     // Init
     priority_queue<Path> q;
     for(int i = 0; i < node_cnt; ++i)
         dist[i] = INT_MAX;
-    for(int i = 0; i < node_cnt; ++i)
-        cnt[i] = 1;
     // Start from startnode
     dist[startnode] = 0;
     q.push(Path(startnode, dist[startnode]));
@@ -100,19 +98,23 @@ void dijkstra(int startnode, int endnode,int *count_node, int *distance)
         int cur_node = q.top().last_node;
         int cur_length = q.top().length;
         q.pop();
+        //Exit if found destination node
+        if(cur_node == endnode) {
+            break;
+        }
         // Skip if path come to node was change after we push the old path to priority queue
         if (dist[cur_node] != cur_length) continue;
         // Traverse list of adjacent edges
         for(int i = 0; i < adjacent_edges[cur_node].size(); ++i) {
+            visited_node_cnt ++;
             Edge e = adjacent_edges[cur_node][i];
             if (dist[e.node] > cur_length + e.length) {
                 dist[e.node] = cur_length + e.length;
-                cnt[e.node] = cnt[cur_node] + 1;
                 q.push(Path(e.node, dist[e.node]));
             }
         }
     }
-    *count_node = cnt[endnode];
+    *count_node = visited_node_cnt;
     *distance = dist[endnode];
 }
 
@@ -158,7 +160,7 @@ int main()
             }
         }
     }
-    printf("%d", count_node);
+    //printf("%d", count_node);
 
     //Print to file out
     fprintf(fp, "%d\n", count);
